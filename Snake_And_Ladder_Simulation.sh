@@ -10,6 +10,18 @@ PLAYER_POSITION=0
 #Variables
 playerCurrentPosition=$PLAYER_POSITION
 countOfDice=0
+player=1
+
+#Function For Deciding Turn Of Player
+playersTurn()
+{
+	if (($1 == 1))
+	then
+		player=2
+	else
+		player=1
+	fi
+}
 
 #Create A Function To Roll The Dice
 rollingDice()
@@ -57,7 +69,9 @@ tillWinningPosition()
 		rollingDice
 		if (( $playerCurrentPosition == 100 ))
 		then
-				echo "Cogratulations...You Won!!"
+				currentPositionDict[$countOfDice]=$playerCurrentPosition
+				echo "TOtal Count Of Dice is : $countOfDice"
+				echo "Cogratulations Player $player You Won!!"
 				break
 		elif (( $(( $playerCurrentPosition + $dice)) > 100 ))
 		then
@@ -65,6 +79,7 @@ tillWinningPosition()
 		else
 				checkForOptions
 		fi
+		playersTurn $player
 		echo
 		echo
 	done
