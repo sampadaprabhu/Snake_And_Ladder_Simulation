@@ -11,4 +11,31 @@ rollingDice()
 	((countOfDice++))
 	echo "The number on Dice After Rolling the Dice is : $dice"
 }
+checkForOptions()
+{
+	options=$((RANDOM%3))
+	case $options in
+			0)
+				playerCurrentPosition=$playerCurrentPosition
+				;;
+			1)
+				ladder=$(( $playerCurrentPosition + $dice ))
+				playerCurrentPosition=$ladder
+				echo $ladder
+				;;
+			2)
+				snake=$(( $playerCurrentPosition - $dice ))
+				playerCurrentPosition=$snake
+				echo $snake
+				if (( $snake < 0 ))
+				then
+					playerCurrentPosition=0
+				fi
+				;;
+			*)
+				echo "No Matches Found!!"
+				;;
+	esac
+}
 rollingDice
+checkForOptions
