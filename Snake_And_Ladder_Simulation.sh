@@ -1,17 +1,15 @@
 #!/bin/bash -x
 echo "Welcome To Snake And Ladder Game"
-
 #Declaring Dictionary
 declare -A currentPositionDict
-
 #Constant Variable
-PLAYER_POSITION=0
-
+NO_PLAY=0
+LADDER=1
+SNAKE=2
 #Variables
-playerCurrentPosition=$PLAYER_POSITION
+playerCurrentPosition=0
 countOfDice=0
 player=1
-
 #Function For Deciding Turn Of Player
 playersTurn()
 {
@@ -22,29 +20,27 @@ playersTurn()
 		player=1
 	fi
 }
-
 #Create A Function To Roll The Dice
 rollingDice()
 {
 	dice=$(( 1 + $((RANDOM%6)) ))
 	echo "The number on Dice After Rolling the Dice is : $dice"
 }
-
 #Create A Function To Check Options Like No Play, Ladder, Snake
 checkForOptions()
 {
 	options=$((RANDOM%3))
 	echo "Option : $options"
 	case $options in
-			0)
+			$NO_PLAY)
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
 				;;
-			1)
+			$LADDER)
 				playerCurrentPosition=$(( $playerCurrentPosition + $dice ))
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
 				echo $playerCurrentPosition
 				;;
-			2)
+			$SNAKE)
 				playerCurrentPosition=$(( $playerCurrentPosition - $dice ))
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
 				echo $playerCurrentPosition
@@ -54,16 +50,13 @@ checkForOptions()
 					currentPositionDict[$countOfDice]=$playerCurrentPosition
 				fi
 				;;
-			*)
-				echo "No Matches Found!!"
-				;;
 	esac
 	echo "Position Of Player On $countOfDice Roll Dice:currentPositionDict[$countOfDice]"
 }
 tillWinningPosition()
 {
 	playerCurrentPosition=${currentPositionDict[$countOfDice]}
-	while (( $playerCurrentPosition <= 100 ))
+	while [[ $playerCurrentPosition -le 100 ]]
 	do
 		((countOfDice++))
 		rollingDice
@@ -80,8 +73,6 @@ tillWinningPosition()
 				checkForOptions
 		fi
 		playersTurn $player
-		echo
-		echo
 	done
 }
 currentPositionDict=([0]=0)
