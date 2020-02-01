@@ -4,6 +4,9 @@ echo "Welcome To Snake And Ladder Game"
 #Constant Variable
 PLAYER_POSITION=0
 
+#Variables
+playerCurrentPosition=$PLAYER_POSITION
+
 #Create A Function To Roll The Dice
 rollingDice()
 {
@@ -29,7 +32,7 @@ checkForOptions()
 				echo $snake
 				if (( $snake < 0 ))
 				then
-					playerCurrentPosition=0
+					playerCurrentPosition=$PLAYER_POSITION
 				fi
 				;;
 			*)
@@ -37,5 +40,12 @@ checkForOptions()
 				;;
 	esac
 }
-rollingDice
-checkForOptions
+tillWinningPosition()
+{
+	while (( $playerCurrentPosition <= 100 ))
+	do
+		rollingDice
+		checkForOptions
+	done
+}
+tillWinningPosition
