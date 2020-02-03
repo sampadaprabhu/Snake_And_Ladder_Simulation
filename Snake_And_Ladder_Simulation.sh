@@ -6,8 +6,10 @@ declare -A currentPositionDict
 NO_PLAY=0
 LADDER=1
 SNAKE=2
+PLAYER_POSITION=0
+WINNING_POSITION=100
 #Variables
-playerCurrentPosition=0
+playerCurrentPosition=$PLAYER_POSITION
 countOfDice=0
 player=1
 #Function For Deciding Turn Of Player
@@ -24,13 +26,11 @@ playersTurn()
 rollingDice()
 {
 	dice=$(( 1 + $((RANDOM%6)) ))
-	echo "The number on Dice After Rolling the Dice is : $dice"
 }
 #Create A Function To Check Options Like No Play, Ladder, Snake
 checkForOptions()
 {
 	options=$((RANDOM%3))
-	echo "Option : $options"
 	case $options in
 			$NO_PLAY)
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
@@ -38,12 +38,10 @@ checkForOptions()
 			$LADDER)
 				playerCurrentPosition=$(( $playerCurrentPosition + $dice ))
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
-				echo $playerCurrentPosition
 				;;
 			$SNAKE)
 				playerCurrentPosition=$(( $playerCurrentPosition - $dice ))
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
-				echo $playerCurrentPosition
 				if (( $playerCurrentPosition < 0 ))
 				then
 					playerCurrentPosition=$PLAYER_POSITION
@@ -51,29 +49,27 @@ checkForOptions()
 				fi
 				;;
 	esac
-	echo "Position Of Player On $countOfDice Roll Dice:currentPositionDict[$countOfDice]"
 }
 tillWinningPosition()
 {
-	playerCurrentPosition=${currentPositionDict[$countOfDice]}
-	while [[ $playerCurrentPosition -le 100 ]]
+	
+	while [[ $playerCurrentPosition -le $WINNING_POSITION ]]
 	do
+		playerCurrentPosition=${currentPositionDict[$(($countOfDice-1))]}
 		((countOfDice++))
 		rollingDice
-		if (( $playerCurrentPosition == 100 ))
+		if (( $playerCurrentPosition == $WINNING_POSITION ))
 		then
 				currentPositionDict[$countOfDice]=$playerCurrentPosition
-				echo "TOtal Count Of Dice is : $countOfDice"
-				echo "Cogratulations Player $player You Won!!"
+				echo -e "Total Count Of Dice is : $countOfDice \nCogratulations Player $player You Won!!"
 				break
-		elif (( $(( $playerCurrentPosition + $dice)) > 100 ))
+		elif (( $(( $playerCurrentPosition + $dice)) > $WINNING_POSITION ))
 		then
-				currentPositionDict[$countOfDice]=${currentPositionDict[$(($countOfDice - 1))]}
+				currentPositionDict[$countOfDice]=$playerCurrentPosition
 		else
 				checkForOptions
 		fi
 		playersTurn $player
 	done
 }
-currentPositionDict=([0]=0)
 tillWinningPosition
